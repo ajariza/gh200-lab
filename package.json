@@ -1,0 +1,7 @@
+{
+  "name": "gh200-lab",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo \"Construccion realizada correctamente\""
+  }
+}
