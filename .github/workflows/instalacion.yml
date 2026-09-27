@@ -1,0 +1,16 @@
+name: "Instalacion YAML"
+description: "Este workflow se encarga de instalar las dependencias y construir el proyecto utilizando npm y webpack."
+
+on:
+  workflow_dispatch:
+
+jobs:
+    instalacion: 
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v1
+            - name: npm install and build webpack
+              run: |
+                npm install
+                npm run build
