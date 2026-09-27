@@ -1,0 +1,12 @@
+name: Validación YAML
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar mensaje
+        run: echo "El workflow se ha ejecutado correctamente"
