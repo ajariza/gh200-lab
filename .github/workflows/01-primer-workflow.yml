@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Descargar repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v999
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
