@@ -23,6 +23,7 @@ jobs:
       - name: Ejecutar tests
         run: npm test
   info:
+    needs: validate
     runs-on: ubuntu-latest
 
     steps:
