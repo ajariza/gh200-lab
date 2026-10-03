@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'src/**'
-      - 'package*.json'
 
   pull_request:
     branches:
@@ -30,6 +27,16 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
+      - name: Validar proyecto con action local
+        id: test_project
+        uses: ./.github/actions/test-project
+        with:
+          node-version: '24'
+        
+      - name: Mostrar resultado de la action
+        run: |
+          echo "Resultado de la action: ${{ steps.test_project.outputs.result }}"
+          
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
