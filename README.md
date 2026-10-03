@@ -16,4 +16,4 @@ Durante este laboratorio iremos automatizando progresivamente las siguientes tar
 - Ejecutar automáticamente los tests.
 - Validar los cambios antes de hacer merge a `main`.
 - Generar los artefactos de la aplicación.
-- Evitar desplegar una versión si las pruebas fallan.
+- Evitar desplegar una versión si las pruebas fallan...
