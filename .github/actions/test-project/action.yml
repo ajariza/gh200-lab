@@ -17,9 +17,6 @@ runs:
     - name: Instalar dependencias
       run: npm install
       shell: bash
-    - name: Ejecutar dependencias
-      run: npm run deps
-      shell: bash  
     - name: Instalar dependencias
       run: npm ci
       shell: bash
