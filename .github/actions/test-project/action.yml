@@ -1,0 +1,25 @@
+name: Test project
+description: Instala, prueba y compila
+inputs:
+  node-version:
+    required: false
+    default: '22'
+outputs:
+  result:
+    description: Resultado de la acción
+    value: ${{ steps.test.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+    - run: npm ci
+      shell: bash
+    - run: npm test
+      shell: bash
+    - run: npm run build
+      shell: bash
+    - id: result
+      run: echo "result=ok" >> "$GITHUB_OUTPUT"
+      shell: bash
