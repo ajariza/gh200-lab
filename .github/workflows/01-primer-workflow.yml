@@ -47,3 +47,6 @@ jobs:
             pwd
             node --version
             echo "$GITHUB_WORKSPACE"        
+            
+     - name: Mostrar entorno seleccionado
+        run: echo "Entorno seleccionado: ${{ inputs.environment }}"
