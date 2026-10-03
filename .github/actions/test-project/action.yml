@@ -14,12 +14,22 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-    - run: npm ci
+    - name: Instalar dependencias
+      run: npm install
       shell: bash
-    - run: npm test
+    - name: Ejecutar dependencias
+      run: npm run deps
+      shell: bash  
+    - name: Instalar dependencias
+      run: npm ci
       shell: bash
-    - run: npm run build
+    - name: Ejecutar tests
+      run: npm test
       shell: bash
-    - id: result
+    - name: Compilar proyecto
+      run: npm run build
+      shell: bash
+    - name: Generar resultado
+      id: result
       run: echo "result=ok" >> "$GITHUB_OUTPUT"
       shell: bash
