@@ -11,12 +11,10 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-    - name: Instalar dependencias
-      run: npm install
-      shell: bash
     - name: Instalar dependencias
       run: npm ci
       shell: bash
