@@ -10,6 +10,14 @@ on:
       - main
 
   workflow_dispatch:
+    inputs:
+        environment:
+            description: 'Entorno de ejecución'
+            required: true
+            type: choice
+            options:
+             - test
+             - pre
 
 jobs:
   validate:
