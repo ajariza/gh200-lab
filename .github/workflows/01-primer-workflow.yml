@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Ejecutar tests
-        run: npm test
+        run: npm test-error
   info:
     needs: validate
     runs-on: ubuntu-latest
