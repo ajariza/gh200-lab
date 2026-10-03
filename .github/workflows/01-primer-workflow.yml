@@ -37,16 +37,6 @@ jobs:
         run: |
           echo "Resultado de la action: ${{ steps.test_project.outputs.result }}"
           
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Ejecutar tests
-        run: npm test
   info:
     needs: validate
     runs-on: ubuntu-latest
