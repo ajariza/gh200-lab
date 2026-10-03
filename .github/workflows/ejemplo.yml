@@ -1,0 +1,71 @@
+name: CI GH-200
+
+on:
+  workflow_dispatch:
+    inputs:
+      entorno:
+        description: Entorno
+        required: true
+        type: choice
+        options:
+          - test
+          - pre
+          - pro
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: [22, 24]
+
+    steps:
+
+      - name: Descargar código
+        uses: actions/checkout@v7
+
+      - name: Configurar Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar
+        run: npm run build
+
+      - name: Subir artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-node-${{ matrix.node }}
+          path: dist/
+
+
+  deploy:
+    needs: build
+
+    if: ${{ inputs.entorno == 'pro' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Mostrar entorno
+        run: |
+          echo "Entorno: ${{ inputs.entorno }}"
+          echo "Usuario: ${{ github.actor }}"
+
+      - name: Desplegar
+        env:
+          TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: ./deploy.sh
