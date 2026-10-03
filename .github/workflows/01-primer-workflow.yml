@@ -22,3 +22,12 @@ jobs:
 
       - name: Ejecutar tests
         run: npm test
+  info:
+    runs-on: ubuntu-latest
+
+    steps:
+     - name: Mostrar información del runner
+       run: |
+            pwd
+            node --version
+            echo "$GITHUB_WORKSPACE"        
