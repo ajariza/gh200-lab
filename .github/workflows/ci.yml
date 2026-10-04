@@ -48,6 +48,14 @@ jobs:
             echo "Commit SHA: ${{ github.sha }}"
             echo "Sistema operativo: ${{ runner.os }}"
       
+      - name: Generar información de build
+        run: |
+            echo "APP_NAME=$APP_NAME" > build-info.txt
+            echo "BUILD_VERSION=$BUILD_VERSION" >> build-info.txt
+            echo "GITHUB_REF=${{ github.ref }}" >> build-info.txt
+            echo "GITHUB_SHA=${{ github.sha }}" >> build-info.txt
+            echo "RUNNER_OS=${{ runner.os }}" >> build-info.txt
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
