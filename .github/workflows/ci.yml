@@ -106,3 +106,12 @@ jobs:
           name: app-build
           path: dist/
           retention-days: 7        
+
+      - name: Generar resumen del job
+        run: |
+            echo "## Resultado de CI" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Aplicación: $APP_NAME" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Versión: 1.0.${{ github.run_number }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Artifact: app-build" >> "$GITHUB_STEP_SUMMARY"          
