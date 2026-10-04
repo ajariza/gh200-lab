@@ -8,6 +8,9 @@ on:
   pull_request:
     branches:
       - main
+env:
+  APP_NAME: gh200-lab
+  
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -18,6 +21,10 @@ jobs:
         node: [20, 22]
 
     steps:
+      - name: Mostrar aplicación
+        run: |
+            echo "Aplicación: $APP_NAME"
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
