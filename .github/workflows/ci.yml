@@ -115,3 +115,28 @@ jobs:
             echo "- Versión: 1.0.${{ github.run_number }}" >> "$GITHUB_STEP_SUMMARY"
             echo "- Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
             echo "- Artifact: app-build" >> "$GITHUB_STEP_SUMMARY"          
+
+  output-demo:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.v.outputs.value }}
+
+    steps:
+      - name: Generar output
+        id: v
+        run: |
+          echo "value=1.2.3" >> "$GITHUB_OUTPUT"
+
+      - name: Mostrar output del step
+        run: |
+          echo "Output del step: ${{ steps.v.outputs.value }}"
+
+  output-consumer:
+    needs: output-demo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar output recibido del otro job
+        run: |
+          echo "Output del job: ${{ needs.output-demo.outputs.version }}"            
