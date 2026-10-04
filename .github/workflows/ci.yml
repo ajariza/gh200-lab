@@ -41,7 +41,13 @@ jobs:
       - name: Mostrar output de versión
         run: |
             echo "Versión desde output: ${{ steps.version.outputs.value }}"
-            
+
+      - name: Mostrar contextos de GitHub
+        run: |
+            echo "Referencia: ${{ github.ref }}"
+            echo "Commit SHA: ${{ github.sha }}"
+            echo "Sistema operativo: ${{ runner.os }}"
+      
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
