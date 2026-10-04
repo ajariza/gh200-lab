@@ -79,3 +79,36 @@ jobs:
 
       - name: Ejecutar build
         run: npm run build
+
+      - name: Generar artefacto de build
+        run: |
+            mkdir -p dist
+            echo "Aplicación: $APP_NAME" > dist/build.txt
+            echo "Versión: $BUILD_VERSION" >> dist/build.txt
+            echo "Node: ${{ matrix.node }}" >> dist/build.txt
+            echo "Commit: ${{ github.sha }}" >> dist/build.txt
+
+      - name: Subir artefacto de build
+        uses: actions/upload-artifact@v4
+        with:
+            name: app-build-node-${{ matrix.node }}
+            path: dist/            
+ 
+  consume:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Confirmar inicio del job consumidor
+        run: |
+          echo "El job consume empieza después de terminar CI"
+
+      - name: Descargar artefacto de Node 20
+        uses: actions/download-artifact@v5
+        with:
+            name: app-build-node-20
+            path: dist
+
+      - name: Mostrar contenido del artefacto
+        run: |
+            cat dist/build.txt
