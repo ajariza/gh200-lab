@@ -1,4 +1,5 @@
 # gh200-lab
+[![CI](https://github.com/ajariza/gh200-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/ajariza/gh200-lab/actions/workflows/ci.yml)
 Laboratorio personal para GitHub Actions GH-200
 ## Objetivos de automatización
 

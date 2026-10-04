@@ -13,6 +13,7 @@ env:
   
 jobs:
   ci:
+    name: Validación CI
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -86,6 +87,7 @@ jobs:
         run: npm run build
 
   package:
+    name: Generar paquete
     needs: ci
     runs-on: ubuntu-latest
 
