@@ -118,3 +118,12 @@ jobs:
       - name: Mostrar contenido del artefacto
         run: |
             cat dist/build.txt
+
+  package:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Preparar paquete
+        run: |
+          echo "Los tests han terminado correctamente"            
