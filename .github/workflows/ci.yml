@@ -56,6 +56,12 @@ jobs:
             echo "GITHUB_SHA=${{ github.sha }}" >> build-info.txt
             echo "RUNNER_OS=${{ runner.os }}" >> build-info.txt
 
+      - name: Subir información de build
+        uses: actions/upload-artifact@v4
+        with:
+            name: build-info
+            path: build-info.txt
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
