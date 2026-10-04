@@ -12,6 +12,10 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node: [20, 22]
+
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
@@ -19,7 +23,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node }}
           cache: 'npm'
 
       - name: Instalar dependencias
