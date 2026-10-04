@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [20, 22]
+        node: [20, 22, 999]
 
     steps:
       - name: Descargar repositorio
