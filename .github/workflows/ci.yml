@@ -92,7 +92,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: app-build-node-${{ matrix.node }}
-            path: dist/            
+            path: dist/       
+            retention-days: 7     
  
   consume:
     needs: ci
