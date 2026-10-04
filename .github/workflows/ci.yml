@@ -33,6 +33,15 @@ jobs:
         run: |
             echo "Versión generada: $BUILD_VERSION"
       
+      - name: Publicar versión como output
+        id: version
+        run: |
+            echo "value=1.0.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Mostrar output de versión
+        run: |
+            echo "Versión desde output: ${{ steps.version.outputs.value }}"
+            
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
