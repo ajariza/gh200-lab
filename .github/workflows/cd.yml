@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
-        
+
       - name: Generar artifact
         run: |
           mkdir -p dist
@@ -51,3 +51,14 @@ jobs:
       - name: Mostrar entorno configurado
         run: |
           echo "Entorno configurado: ${{ vars.APP_ENV }}"
+
+  deploy-production:
+    needs: deploy-staging
+    if: ${{ inputs.deploy }}
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Mostrar despliegue en producción
+        run: |
+          echo "Desplegando en ${{ vars.APP_ENV }}"          
