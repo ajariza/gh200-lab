@@ -31,6 +31,7 @@ jobs:
         with:
           name: app-build
           path: dist/
+          retention-days: 5
 
 
   deploy-staging:
