@@ -2,11 +2,45 @@ name: CD
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: "¿Realizar despliegue?"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
 
 jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Generar artifact
+        run: |
+          mkdir -p dist
+          echo "Build de gh200-lab" > dist/build.txt
+
+      - name: Subir artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: dist/
+
+
   deploy-staging:
+    needs: build
+    if: ${{ inputs.deploy }}
     runs-on: ubuntu-latest
     environment: staging
+
+    env:
+      DEMO_TOKEN: ${{ secrets.DEMO_TOKEN }}
 
     steps:
       - name: Mostrar despliegue
