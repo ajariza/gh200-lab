@@ -21,18 +21,47 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Generar artifact
+      - name: Preparar contenido de distribución
         run: |
-          mkdir -p dist
-          echo "Build de gh200-lab" > dist/build.txt
+            mkdir -p dist
+            cp -r src dist/
+            cp package*.json dist/
+
+      - name: Generar información de build
+        run: |
+          echo "Commit: ${{ github.sha }}" > dist/build-info.txt
+          echo "Run number: ${{ github.run_number }}" >> dist/build-info.txt
+
+      - name: Generar checksum SHA-256
+        run: |
+            cd dist
+            sha256sum package.json package-lock.json build-info.txt > checksums.sha256
 
       - name: Subir artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-build
+          name: app-${{ github.sha }}
           path: dist/
           retention-days: 5
 
+  verify-artifact:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: app-${{ github.sha }}
+          path: dist
+
+      - name: Verificar contenido del artifact
+        run: |
+          echo "Contenido descargado:"
+          find dist -maxdepth 3 -type f -print
+          echo ""
+          echo "build-info.txt:"
+          cat dist/build-info.txt          
 
   deploy-staging:
     needs: build
