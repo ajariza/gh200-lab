@@ -6,7 +6,6 @@ on:
     types: [opened]
 
 permissions:
-  issues: write
   contents: read
   
 jobs:
