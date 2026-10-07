@@ -6,7 +6,7 @@ on:
     types: [opened]
 
 permissions:
-  contents: read
+   contents: read
   
 jobs:
   script:
