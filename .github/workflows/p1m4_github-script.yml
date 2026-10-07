@@ -2,6 +2,8 @@ name: GitHub Script
 
 on:
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   issues: write
@@ -19,3 +21,15 @@ jobs:
             core.info(`Owner: ${context.repo.owner}`)
             core.info(`Repo: ${context.repo.repo}`)
             core.info(`Repo completo: ${context.repo.owner}/${context.repo.repo}`)
+
+      - name: Comentar issue GH200
+        if: contains(github.event.issue.title, 'GH200')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Issue recibido por el laboratorio GH-200'
+            })  
