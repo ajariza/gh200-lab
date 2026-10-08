@@ -35,4 +35,11 @@ Ejemplos:
 - `ghcr.io/ajariza/gh200-lab:3f8a21c`
 - `ghcr.io/ajariza/gh200-lab:1.0.0`
 
-No se dependerá exclusivamente del tag `latest`, ya que no identifica de forma inequívoca la versión o commit de origen.
+
+## Tipos de artefactos y paquetes
+
+| Tipo | Duración prevista | Consumidor | Ejemplo |
+|---|---|---|---|
+| Source | Permanente mientras exista en el repositorio | Desarrolladores, CI | `src/`, `package.json` |
+| Workflow artifact | Temporal, ligado a ejecuciones y retención configurada | Jobs posteriores, desarrolladores, auditoría puntual | `dist/`, ZIP de build, logs |
+| Container package | Persistente y versionado en un registry | Entornos de despliegue, otros equipos, servidores | `ghcr.io/ajariza/gh200-lab:1.0.0` |

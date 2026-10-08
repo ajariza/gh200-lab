@@ -1,0 +1,35 @@
+name: Publicar package en GHCR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir imagen Docker
+        run: |
+            docker build -t ghcr.io/ajariza/gh200-lab:${{ github.sha }} .
+
+      - name: Publicar imagen en GHCR
+        run: |
+            docker push ghcr.io/ajariza/gh200-lab:${{ github.sha }}
+            
