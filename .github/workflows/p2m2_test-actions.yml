@@ -1,0 +1,39 @@
+name: Probar actions personalizadas
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-actions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      # 1. Probar composite action
+      - name: Ejecutar Quality Gate
+        id: quality
+        uses: ./.github/actions/quality-gate
+        with:
+          node-version: '22'
+
+      - name: Mostrar resultado Quality Gate
+        run: |
+          echo "Resultado Quality Gate: ${{ steps.quality.outputs.status }}"
+
+      # 2. Instalar dependencias de la JavaScript action
+      - name: Instalar dependencias de hello-js
+        run: npm ci
+        working-directory: .github/actions/hello-js
+
+      # 3. Probar JavaScript action
+      - name: Ejecutar Hello JS
+        id: hello
+        uses: ./.github/actions/hello-js
+        with:
+          name: Antonio
+
+      - name: Mostrar saludo
+        run: |
+          echo "Saludo recibido: ${{ steps.hello.outputs.greeting }}"

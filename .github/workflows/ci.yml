@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+env:
+  APP_NAME: gh200-lab
+  
+jobs:
+  ci:
+    name: Validación CI
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22]
+        exclude:
+        - os: windows-latest
+          node: 20
+
+    steps:
+      - name: Mostrar aplicación
+        run: |
+            echo "Aplicación: $APP_NAME"
+
+      - name: Preparar versión de build
+        run: |
+            echo "BUILD_VERSION=1.0.${{ github.run_number }}" >> "$GITHUB_ENV"
+
+      - name: Mostrar versión de build
+        run: |
+            echo "Versión generada: $BUILD_VERSION"
+      
+      - name: Publicar versión como output
+        id: version
+        run: |
+            echo "value=1.0.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Mostrar output de versión
+        run: |
+            echo "Versión desde output: ${{ steps.version.outputs.value }}"
+
+      - name: Mostrar contextos de GitHub
+        run: |
+            echo "Referencia: ${{ github.ref }}"
+            echo "Commit SHA: ${{ github.sha }}"
+            echo "Sistema operativo: ${{ runner.os }}"
+      
+      - name: Generar información de build
+        run: |
+            echo "APP_NAME=$APP_NAME" > build-info.txt
+            echo "BUILD_VERSION=$BUILD_VERSION" >> build-info.txt
+            echo "GITHUB_REF=${{ github.ref }}" >> build-info.txt
+            echo "GITHUB_SHA=${{ github.sha }}" >> build-info.txt
+            echo "RUNNER_OS=${{ runner.os }}" >> build-info.txt
+
+      - name: Subir información de build
+        uses: actions/upload-artifact@v4
+        with:
+            name: build-info
+            path: build-info.txt
+
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Ejecutar Quality Gate
+        id: quality
+        uses: ./.github/actions/quality-gate
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Mostrar resultado del Quality Gate
+        run: |
+          echo "Resultado del Quality Gate: ${{ steps.quality.outputs.status }}"
+
+  package:
+    name: Generar paquete
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Generar paquete
+        run: |
+          mkdir -p dist
+          echo "Aplicación: $APP_NAME" > dist/build.txt
+          echo "Versión: 1.0.${{ github.run_number }}" >> dist/build.txt
+          echo "Commit: ${{ github.sha }}" >> dist/build.txt
+
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: dist/
+          retention-days: 7        
+
+      - name: Generar resumen del job
+        run: |
+            echo "## Resultado de CI" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Aplicación: $APP_NAME" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Versión: 1.0.${{ github.run_number }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Artifact: app-build" >> "$GITHUB_STEP_SUMMARY"          
+
+  output-demo:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.v.outputs.value }}
+
+    steps:
+      - name: Generar output
+        id: v
+        run: |
+          echo "value=1.2.3" >> "$GITHUB_OUTPUT"
+
+      - name: Mostrar output del step
+        run: |
+          echo "Output del step: ${{ steps.v.outputs.value }}"
+
+  output-consumer:
+    needs: output-demo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar output recibido del otro job
+        run: |
+          echo "Output del job: ${{ needs.output-demo.outputs.version }}"            

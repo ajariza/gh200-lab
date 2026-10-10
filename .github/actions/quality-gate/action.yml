@@ -1,0 +1,39 @@
+name: Quality gate
+description: Instala dependencias, ejecuta tests y construye el proyecto
+
+inputs:
+  node-version:
+    description: 'Versión de Node.js'
+    required: false
+    default: '22'
+
+outputs:
+  status:
+    description: 'Resultado del quality gate'
+    value: ${{ steps.out.outputs.status }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Instalar dependencias
+      run: npm ci
+      shell: bash
+
+    - name: Ejecutar tests
+      run: npm test
+      shell: bash
+
+    - name: Ejecutar build
+      run: npm run build
+      shell: bash
+
+    - name: Publicar resultado
+      id: out
+      run: echo "status=passed" >> "$GITHUB_OUTPUT"
+      shell: bash
