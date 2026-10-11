@@ -8,3 +8,13 @@ jobs:
     uses: ./.github/workflows/p2m3_3_reusable-ci.yml
     with:
       node-version: '22'
+      run-build: true
+
+  mostrar-version:
+    needs: llamar-reusable-ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar versión generada
+        run: |
+          echo "Versión recibida: ${{ needs.llamar-reusable-ci.outputs.version }}"
