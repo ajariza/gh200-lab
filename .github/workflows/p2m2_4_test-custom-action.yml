@@ -1,4 +1,4 @@
-name: Probar Hello JS
+name: P2M2_4_Probar Hello JS
 
 on:
   workflow_dispatch:
