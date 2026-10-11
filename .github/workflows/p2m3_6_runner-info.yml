@@ -5,7 +5,11 @@ on:
 
 jobs:
   runner-info:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Mostrar información del runner
@@ -20,4 +24,4 @@ jobs:
           node --version
           npm --version
           python --version
-          docker --version          
+          docker --version
