@@ -231,3 +231,27 @@ En entornos de producción o altamente restringidos, la incorporación de una nu
 | `./.github/actions/hello-js` | Local JavaScript Action |
 | `./.github/workflows/p2m3_3_reusable-ci.yml` | Local Reusable Workflow |
 
+
+### Estrategia de reutilización para 20 repositorios
+
+Para una organización con 20 repositorios centralizaría en reusable workflows los procesos comunes de CI/CD.
+
+Elementos a centralizar:
+
+- Configuración estándar de Node.js.
+- Instalación de dependencias.
+- Ejecución de tests.
+- Build.
+- Generación de versión.
+- Publicación de artifacts.
+- Reglas comunes de seguridad.
+- Permisos mínimos de GITHUB_TOKEN.
+- Integración con entornos de staging y producción.
+- Validaciones comunes antes del merge.
+
+Los repositorios consumidores deberían limitarse a:
+
+- Llamar al reusable workflow.
+- Pasar inputs específicos.
+- Mapear únicamente los secrets necesarios.
+- Añadir lógica propia solo cuando sea específica del proyecto.
