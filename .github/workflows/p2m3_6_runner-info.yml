@@ -13,3 +13,11 @@ jobs:
           echo "Sistema operativo: ${{ runner.os }}"
           echo "Arquitectura: ${{ runner.arch }}"
           node --version
+
+      - name: Mostrar herramientas disponibles
+        run: |
+          git --version
+          node --version
+          npm --version
+          python --version
+          docker --version          
