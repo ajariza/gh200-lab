@@ -1,0 +1,10 @@
+name: P2M3_3 - Consumir Reusable CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  llamar-reusable-ci:
+    uses: ./.github/workflows/p2m3_3_reusable-ci.yml
+    with:
+      node-version: '22'
