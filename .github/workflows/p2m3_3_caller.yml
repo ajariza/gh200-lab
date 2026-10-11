@@ -2,13 +2,21 @@ name: P2M3_3 - Consumir Reusable CI
 
 on:
   workflow_dispatch:
+    inputs:
+      run-build:
+        description: Ejecutar build
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   llamar-reusable-ci:
     uses: ./.github/workflows/p2m3_3_reusable-ci.yml
     with:
       node-version: '22'
-      run-build: true
+      run-build: ${{ inputs.run-build }}
+    secrets:
+      DEMO_REUSABLE_SECRET: ${{ secrets.DEMO_REUSABLE_SECRET }}
 
   mostrar-version:
     needs: llamar-reusable-ci

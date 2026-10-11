@@ -15,6 +15,10 @@ on:
         type: boolean
         default: false
 
+    secrets:
+      DEMO_REUSABLE_SECRET:
+        required: false
+
     outputs:
       version:
         description: Versión generada por el workflow
@@ -49,3 +53,14 @@ jobs:
       - name: Generar versión
         id: version
         run: echo "version=1.0.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Comprobar secret recibido
+        shell: bash
+        env:
+          DEMO_REUSABLE_SECRET: ${{ secrets.DEMO_REUSABLE_SECRET }}
+        run: |
+          if [ -n "$DEMO_REUSABLE_SECRET" ]; then
+            echo "Secret recibido correctamente"
+          else
+            echo "Secret no configurado"
+          fi        
