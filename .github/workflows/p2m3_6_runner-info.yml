@@ -25,3 +25,8 @@ jobs:
           npm --version
           python --version
           docker --version
+
+      - name: Mostrar shell y directorio
+        run: |
+          echo "Sistema: ${{ runner.os }}"
+          pwd
