@@ -1,0 +1,22 @@
+name: Probar Hello JS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias de hello-js
+        run: npm ci
+        working-directory: .github/actions/hello-js
+
+      - name: Ejecutar Hello JS
+        id: hello
+        uses: ./.github/actions/hello-js
+        with:
+          name: Antonio

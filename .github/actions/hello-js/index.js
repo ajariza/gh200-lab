@@ -3,9 +3,14 @@ const core = require('@actions/core');
 try {
   const name = core.getInput('name');
 
-  const greeting = `Hola ${name}, bienvenido a GH-200`;
+  if (!name) {
+    core.setFailed('El input name es obligatorio');
+    return;
+  }
 
-  console.log(greeting);
+  const greeting = `Hola ${name}`;
+
+  core.info(greeting);
 
   core.setOutput('greeting', greeting);
 } catch (error) {
