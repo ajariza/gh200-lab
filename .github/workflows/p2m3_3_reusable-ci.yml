@@ -1,0 +1,29 @@
+name: P2M3_3 - Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Versión de Node.js
+        required: false
+        type: string
+        default: '22'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar tests
+        run: npm test
