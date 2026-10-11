@@ -99,3 +99,135 @@ GitHub Enterprise Server puede ser más adecuado cuando:
 - La organización puede asumir la administración, parcheado, actualizaciones y disponibilidad de la plataforma.
 
 La elección debe basarse en requisitos de seguridad, conectividad, operación, cumplimiento y control de infraestructura.
+
+### Reusable workflow vs Composite Action
+
+Una composite action reutiliza principalmente una secuencia de steps.
+
+Ejemplo:
+- `quality-gate`
+- Puede incluir `setup-node`, `npm ci`, `npm test`, `npm run build`
+- Se invoca dentro de `steps` con `uses`
+
+Un reusable workflow reutiliza jobs completos.
+
+Ejemplo:
+- `p2m3_3_reusable-ci.yml`
+- Define uno o varios jobs completos
+- Puede definir runners, permissions, environments, matrices, inputs, secrets y outputs
+- Se invoca con `uses` a nivel de job
+
+Resumen:
+
+| Característica | Composite Action | Reusable Workflow |
+|---|---|---|
+| Reutiliza | Steps | Jobs/workflows completos |
+| Se invoca en | `steps` | `jobs` |
+| Usa `workflow_call` | No | Sí |
+| Puede definir `runs-on` | No | Sí |
+| Puede definir varios jobs | No | Sí |
+| Ideal para | Lógica de steps reutilizable | CI/CD reutilizable entre repositorios |
+
+### Política de uso de GitHub Actions
+
+La organización permitirá únicamente:
+
+- Actions oficiales publicadas por GitHub, por ejemplo:
+  - `actions/checkout`
+  - `actions/setup-node`
+  - `actions/cache`
+
+- Actions desarrolladas y mantenidas por la organización interna:
+  - `mi-organizacion/*`
+
+No se permitirá el uso libre de actions de terceros sin revisión previa.
+
+Para incorporar una nueva action externa deberá realizarse una revisión de:
+
+- Propietario de la action.
+- Reputación y mantenimiento del repositorio.
+- Permisos requeridos.
+- Código ejecutado.
+- Dependencias utilizadas.
+- Versión consumida.
+- Posibilidad de fijar la referencia a un SHA completo.
+
+## Niveles de política para GitHub Actions
+
+### Desarrollo abierto
+
+Entorno orientado a pruebas, aprendizaje y desarrollo rápido.
+
+Características:
+- Mayor libertad para utilizar actions externas.
+- Se permite experimentar con nuevas actions.
+- Revisión menos estricta.
+- No deben utilizarse credenciales sensibles de producción.
+- El riesgo asumido es mayor.
+
+### Producción controlada
+
+Entorno destinado a procesos CI/CD que afectan a sistemas productivos.
+
+Características:
+- Solo se permiten actions aprobadas.
+- Se revisan permisos y dependencias.
+- Preferencia por actions oficiales o internas.
+- Las referencias externas deben usar versiones controladas y, cuando proceda, SHA completo.
+- Se aplica mínimo privilegio a `GITHUB_TOKEN` y secretos.
+
+### Entorno altamente restringido
+
+Entorno con requisitos elevados de seguridad, cumplimiento o aislamiento.
+
+Características:
+- Preferencia por actions internas.
+- Las actions externas deben estar explícitamente autorizadas.
+- Pinning mediante SHA completo.
+- Uso limitado de Internet y servicios externos.
+- Runners controlados y aislados.
+- Revisión obligatoria antes de introducir nuevas dependencias.
+
+### Actions permitidas por nivel
+
+| Nivel | Actions permitidas |
+|---|---|
+| Desarrollo abierto | GitHub oficiales, internas y terceros para pruebas |
+| Producción controlada | GitHub oficiales, internas y terceros previamente aprobadas |
+| Altamente restringido | Preferentemente internas; externas solo mediante allowlist y aprobación expresa |
+
+### Regla de revisión para nuevas Actions
+
+Antes de incorporar una nueva action externa a un workflow se deberá realizar una revisión previa.
+
+La revisión debe comprobar:
+
+- Quién mantiene la action.
+- Si el repositorio está activo y actualizado.
+- Qué permisos necesita.
+- Qué código y dependencias ejecuta.
+- Si solicita acceso a secretos.
+- Qué versión se va a consumir.
+- Si puede fijarse mediante SHA completo.
+- Si existe una alternativa oficial de GitHub o una action interna.
+- Si la action está incluida en la allowlist de la organización.
+
+En entornos de producción o altamente restringidos, la incorporación de una nueva action deberá ser aprobada antes de su uso.
+
+### Inventario de dependencias de GitHub Actions
+
+| Referencia | Clasificación |
+|---|---|
+| `actions/checkout@v4` | GitHub |
+| `actions/checkout@v7` | GitHub |
+| `actions/setup-node@v4` | GitHub |
+| `actions/setup-node@v7` | GitHub |
+| `actions/upload-artifact@v4` | GitHub |
+| `actions/download-artifact@v5` | GitHub |
+| `actions/github-script@v7` | GitHub |
+| `docker/login-action@v3` | Proveedor reconocido |
+| `./.github/actions/test-project` | Local Action |
+| `./.github/actions/quality-gate` | Local Composite Action |
+| `./.github/actions/hello-js` | Local JavaScript Action |
+| `./.github/workflows/p2m3_3_reusable-ci.yml` | Local Reusable Workflow |
+
