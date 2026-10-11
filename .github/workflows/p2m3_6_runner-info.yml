@@ -1,0 +1,15 @@
+name: P2M3_6 - Información de runners
+
+on:
+  workflow_dispatch:
+
+jobs:
+  runner-info:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar información del runner
+        run: |
+          echo "Sistema operativo: ${{ runner.os }}"
+          echo "Arquitectura: ${{ runner.arch }}"
+          node --version
