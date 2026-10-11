@@ -281,3 +281,103 @@ A cambio, la organización asume responsabilidades adicionales:
 - Monitorización.
 - Disponibilidad.
 - Escalado.
+
+### Diseño de un self-hosted runner de laboratorio
+
+Se plantea un runner autohospedado Linux destinado únicamente a prácticas de GitHub Actions.
+
+Características propuestas:
+
+- Sistema operativo: Ubuntu Server 24.04 LTS.
+- Arquitectura: x64.
+- CPU: 2 vCPU.
+- Memoria: 4 GB RAM.
+- Disco: 20 GB.
+- Conectividad saliente a GitHub.
+- Sin exposición directa de servicios al exterior.
+- Uso exclusivo para workflows de laboratorio.
+- Cuenta de servicio dedicada para ejecutar el runner.
+
+El runner se registraría desde:
+
+GitHub > Settings > Actions > Runners > New self-hosted runner
+
+Durante el registro se utilizaría un token temporal proporcionado por GitHub, que no debe almacenarse ni compartirse.
+
+Después del registro, el runner quedaría disponible con etiquetas como:
+
+- self-hosted
+- linux
+- x64
+- gh200-lab
+
+Los workflows podrían seleccionarlo con:
+
+```yaml
+runs-on: [self-hosted, linux, gh200-lab]
+
+### Proceso de alta de un self-hosted runner
+
+Ruta de configuración:
+
+GitHub
+→ Settings
+→ Actions
+→ Runners
+→ New self-hosted runner
+
+Pasos generales:
+
+1. Seleccionar el sistema operativo y la arquitectura del runner.
+2. Descargar el paquete del runner en la máquina que lo alojará.
+3. Descomprimirlo en una carpeta dedicada.
+4. Ejecutar el comando de configuración proporcionado por GitHub.
+5. Introducir la URL del repositorio u organización y el token temporal de registro.
+6. Asignar nombre y labels al runner.
+7. Iniciar el runner.
+8. Comprobar en GitHub que aparece con estado Online.
+
+El token de registro es temporal y no debe almacenarse en documentación, scripts compartidos ni repositorios.
+
+
+### Labels del self-hosted runner
+
+El runner de laboratorio utilizaría las siguientes etiquetas:
+
+- self-hosted
+- linux
+- gh200-lab
+
+Estas labels permiten seleccionar runners por características.
+
+Ejemplo:
+
+```yaml
+runs-on: [self-hosted, linux, gh200-lab]
+
+
+### Comportamiento cuando el self-hosted runner está desconectado
+
+Si un workflow requiere:
+
+```yaml
+runs-on: [self-hosted, linux, gh200-lab]
+
+
+### Mantenimiento y protección del self-hosted runner
+
+Al finalizar una práctica, el runner debería retirarse si ya no va a utilizarse, o mantenerse bajo un procedimiento de actualización y seguridad.
+
+Medidas recomendadas:
+
+- Mantener actualizado el sistema operativo.
+- Aplicar parches de seguridad.
+- Mantener actualizada la aplicación GitHub Actions Runner.
+- Ejecutar el runner con una cuenta dedicada y con privilegios mínimos.
+- Restringir qué repositorios pueden utilizarlo mediante runner groups.
+- Usar labels para separar capacidades y tipos de runner.
+- Evitar almacenar secretos o credenciales persistentes en el host.
+- Limpiar workspace, temporales y artefactos entre ejecuciones.
+- No permitir que repositorios no confiables ejecuten código en runners sensibles.
+- Monitorizar uso, estado y disponibilidad.
+- Retirar el runner cuando deje de ser necesario.

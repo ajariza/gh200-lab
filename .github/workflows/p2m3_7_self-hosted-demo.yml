@@ -1,0 +1,14 @@
+name: P2M3_7 - Self-hosted runner demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  self-hosted-demo:
+    runs-on: [self-hosted, linux, gh200-lab]
+
+    steps:
+      - name: Mostrar información básica
+        run: |
+          echo "Runner self-hosted seleccionado"
+          node --version
