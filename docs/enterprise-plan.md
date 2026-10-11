@@ -255,3 +255,29 @@ Los repositorios consumidores deberían limitarse a:
 - Pasar inputs específicos.
 - Mapear únicamente los secrets necesarios.
 - Añadir lógica propia solo cuando sea específica del proyecto.
+
+
+### Cuándo utilizar self-hosted runners
+
+Elegiría self-hosted runners cuando los workflows necesiten capacidades que no encajan bien con los runners administrados por GitHub.
+
+Casos principales:
+
+- Acceso a recursos de red interna.
+- Conexión a bases de datos o servicios no expuestos a Internet.
+- Uso de software propietario o herramientas internas.
+- Necesidad de hardware específico.
+- Requisitos especiales de rendimiento.
+- Restricciones de seguridad o aislamiento.
+- Necesidad de controlar versiones exactas del software instalado.
+- Escenarios donde el coste de ejecución sea más predecible con infraestructura propia.
+
+A cambio, la organización asume responsabilidades adicionales:
+
+- Instalación y actualización del runner.
+- Parches del sistema operativo.
+- Seguridad del host.
+- Limpieza de datos entre ejecuciones.
+- Monitorización.
+- Disponibilidad.
+- Escalado.
