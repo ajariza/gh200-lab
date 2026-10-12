@@ -400,3 +400,183 @@ Criterios:
 - Usar environment secrets cuando la credencial dependa del entorno.
 - Usar organization secrets cuando varias aplicaciones necesiten compartir una credencial.
 - Preferir OIDC para autenticación cloud cuando el proveedor lo permita, evitando credenciales estáticas de larga duración.
+
+
+### Estrategia de CI reutilizable para 20 repositorios
+
+La organización dispone de 20 repositorios de aplicaciones con una estructura CI similar:
+
+- checkout del código
+- configuración de Node.js
+- instalación de dependencias
+- ejecución de tests
+- build
+- publicación de resultados
+
+Para evitar duplicar la misma lógica en todos los repositorios, se propone centralizar la CI en un reusable workflow corporativo.
+
+Ejemplo:
+
+.github/workflows/reusable-ci.yml
+
+El reusable workflow utilizaría:
+
+```yaml
+on:
+  workflow_call:
+
+
+### Diseño de runner groups
+
+Se definen dos grupos de runners self-hosted con distintos niveles de confianza y uso.
+
+#### Runner group: general-ci
+
+Uso:
+- Compilación.
+- Tests.
+- Análisis estático.
+- Tareas de CI generales.
+
+Características:
+- Sin acceso a recursos sensibles de producción.
+- Puede ser utilizado por la mayoría de repositorios de desarrollo.
+- Permisos de red limitados.
+- Software estándar de desarrollo.
+- Preferiblemente runners efímeros o con limpieza estricta entre jobs.
+
+#### Runner group: trusted-production
+
+Uso:
+- Despliegues a producción.
+- Operaciones que requieren acceso a infraestructura interna sensible.
+- Tareas con credenciales de producción.
+
+Características:
+- Acceso restringido únicamente a repositorios autorizados.
+- Red segmentada y controlada.
+- Mantenimiento y parcheo reforzado.
+- Ejecución con privilegios mínimos.
+- Monitorización y auditoría.
+- No debe aceptar workflows procedentes de repositorios no confiables.
+
+
+### Asignación de repositorios a runner groups
+
+#### general-ci
+
+Podrían utilizar este grupo:
+
+- Repositorios de desarrollo.
+- Librerías internas.
+- Aplicaciones sin acceso a producción.
+- Proyectos que solo necesiten compilar, probar o analizar código.
+- Repositorios con workflows de CI estándar.
+
+Ejemplo:
+
+- app-web
+- api-clientes
+- libreria-comun
+- servicio-notificaciones
+- gh200-lab
+
+#### trusted-production
+
+Solo podrían utilizar este grupo repositorios expresamente autorizados:
+
+- Repositorios que realizan despliegues a producción.
+- Repositorios que necesitan acceso a redes internas sensibles.
+- Repositorios que consumen credenciales de producción.
+- Repositorios con workflows revisados y controlados.
+
+Ejemplo:
+
+- app-produccion
+- backend-produccion
+- infraestructura-produccion
+
+No se permitiría acceso general a este runner group.
+
+### Estrategia de secrets por ámbito
+
+#### Organization secrets
+
+Se utilizarían para credenciales comunes a varios repositorios.
+
+Ejemplos:
+
+- Token corporativo para un servicio compartido.
+- Credencial común de un sistema de análisis.
+- Token para un registry utilizado por varios proyectos.
+
+El acceso debería limitarse únicamente a los repositorios que realmente lo necesiten.
+
+#### Repository secrets
+
+Se utilizarían para credenciales propias de una aplicación o repositorio concreto.
+
+Ejemplos:
+
+- API key exclusiva de una aplicación.
+- Token de integración de un proyecto.
+- Credencial técnica utilizada únicamente por ese repositorio.
+
+No deberían almacenarse aquí credenciales de producción si pueden limitarse mejor mediante un environment.
+
+#### Environment secrets
+
+Se utilizarían para credenciales específicas de un entorno.
+
+Ejemplos:
+
+Environment staging:
+- API_KEY
+- DB_PASSWORD
+- DEPLOY_TOKEN
+
+Environment production:
+- API_KEY
+- DB_PASSWORD
+- DEPLOY_TOKEN
+
+El workflow puede utilizar el mismo nombre de secret, pero GitHub proporciona el valor correspondiente al environment utilizado.
+
+Los secrets de producción deberían combinarse con reglas de protección del environment, como aprobación previa cuando corresponda.
+
+### Objetivos empresariales pendientes o poco practicados
+
+Tras revisar la guía oficial GH-200 2026, quedan algunos objetivos que se han visto solo de forma conceptual o documental.
+
+#### Pendientes de práctica más profunda
+
+- Aplicar IP allow lists y configuración de red para runners.
+- Supervisar runners a escala y diagnosticar problemas de disponibilidad o rendimiento.
+- Consultar en detalle las release notes de imágenes de GitHub-hosted runners.
+- Trabajar con toolcache y software preinstalado en runners.
+- Instalar software adicional en runners de forma controlada.
+- Administrar secrets y variables mediante REST API.
+- Gestionar componentes reutilizables a nivel de organización real.
+- Aplicar políticas de Actions a nivel de organización o enterprise real.
+
+#### Practicado parcialmente
+
+- Runner groups.
+- Self-hosted runners.
+- Restricción de repositorios que pueden usar determinados runners.
+- Organization secrets.
+- Environment protections.
+- Policies de allow/deny de Actions.
+
+#### Practicado de forma suficiente en el laboratorio
+
+- Reusable workflows.
+- workflow_call.
+- Inputs y secrets en workflows reutilizables.
+- Repository secrets.
+- Environment secrets.
+- Variables.
+- Principio de mínimo privilegio.
+- Pinning de actions por SHA.
+- Uso de GitHub-hosted runners.
+- Labels de runners.
