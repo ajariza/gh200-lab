@@ -1,0 +1,29 @@
+name: R3 - YAML Anchors
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-node-20:
+    runs-on: ubuntu-latest
+
+    env: &defaults
+      NODE_ENV: test
+      LOG_LEVEL: info
+
+    steps:
+      - name: Mostrar configuración Node 20
+        run: |
+          echo "NODE_ENV=$NODE_ENV"
+          echo "LOG_LEVEL=$LOG_LEVEL"
+
+  test-node-22:
+    runs-on: ubuntu-latest
+
+    env: *defaults
+
+    steps:
+      - name: Mostrar configuración Node 22
+        run: |
+          echo "NODE_ENV=$NODE_ENV"
+          echo "LOG_LEVEL=$LOG_LEVEL"
