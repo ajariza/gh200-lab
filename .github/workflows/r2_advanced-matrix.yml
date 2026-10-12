@@ -1,0 +1,52 @@
+name: R2 - Advanced Matrix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+        node:
+          - 20
+          - 22
+
+        exclude:
+          - os: windows-latest
+            node: 20
+
+        include:
+          - os: ubuntu-latest
+            node: 24
+            experimental: true
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Mostrar combinación
+        shell: bash
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Node: ${{ matrix.node }}"
+          echo "Experimental: ${{ matrix.experimental || false }}"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar tests
+        run: npm test
