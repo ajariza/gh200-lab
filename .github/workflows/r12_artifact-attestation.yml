@@ -1,0 +1,35 @@
+name: R12 - Artifact Attestation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Crear artifact
+        run: |
+          mkdir -p dist
+          echo "Artifact GH-200" > dist/app.txt
+          tar -czf dist/app.tar.gz dist/app.txt
+
+      - name: Generar attestation
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/app.tar.gz
+
+      - name: Publicar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh200-artifact
+          path: dist/app.tar.gz
