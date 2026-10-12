@@ -1,0 +1,39 @@
+name: R1 - Reusable deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Entorno de destino
+        required: true
+        type: string
+
+      dry-run:
+        description: Simular despliegue
+        required: true
+        type: boolean
+
+    secrets:
+      DEMO_DEPLOY_SECRET:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar parámetros recibidos
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Dry run: ${{ inputs.dry-run }}"
+
+      - name: Comprobar secret recibido
+        env:
+          DEMO_DEPLOY_SECRET: ${{ secrets.DEMO_DEPLOY_SECRET }}
+        run: |
+          if [ -n "$DEMO_DEPLOY_SECRET" ]; then
+            echo "Secret recibido correctamente"
+          else
+            echo "Secret no recibido"
+            exit 1
+          fi

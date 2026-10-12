@@ -1,0 +1,28 @@
+name: R1 - Manual deploy caller
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Entorno de destino
+        required: true
+        type: choice
+        options:
+          - test
+          - staging
+          - production
+
+      dry-run:
+        description: Simular el despliegue sin ejecutarlo
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/r1_reusable-deploy.yml
+    with:
+      environment: ${{ inputs.environment }}
+      dry-run: ${{ inputs.dry-run }}
+    secrets:
+      DEMO_DEPLOY_SECRET: ${{ secrets.DEMO_API_KEY }}
