@@ -1,0 +1,33 @@
+name: R8 - GITHUB_TOKEN Read Only
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Mostrar información del repositorio
+        run: |
+          echo "Repositorio: ${{ github.repository }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Ref: ${{ github.ref }}"
+
+      - name: Listar contenido
+        run: |
+          ls -la
+
+      - name: Intentar crear issue con token de solo lectura
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Prueba R8 permisos" \
+            --body "Este issue intenta crearse con contents: read"          
