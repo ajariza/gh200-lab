@@ -381,3 +381,22 @@ Medidas recomendadas:
 - No permitir que repositorios no confiables ejecuten código en runners sensibles.
 - Monitorizar uso, estado y disponibilidad.
 - Retirar el runner cuando deje de ser necesario.
+
+
+### Estrategia para variables, secrets y OIDC
+
+| Tipo de dato | Mecanismo recomendado | Ejemplo |
+|---|---|---|
+| Configuración no sensible | `vars` | URL de API, nombre de entorno, versión |
+| Credencial sensible común al repositorio | Repository secret | API key, token externo |
+| Credencial sensible específica de un entorno | Environment secret | clave de staging o producción |
+| Credencial compartida entre varios repositorios | Organization secret | token corporativo común |
+| Autenticación cloud temporal | OIDC | acceso a Azure, AWS o GCP sin secreto estático |
+
+Criterios:
+
+- Usar `vars` cuando el dato no sea sensible.
+- Usar repository secrets cuando la credencial pertenezca al repositorio completo.
+- Usar environment secrets cuando la credencial dependa del entorno.
+- Usar organization secrets cuando varias aplicaciones necesiten compartir una credencial.
+- Preferir OIDC para autenticación cloud cuando el proveedor lo permita, evitando credenciales estáticas de larga duración.
