@@ -1,0 +1,47 @@
+name: R5 - Service Container
+
+on:
+  workflow_dispatch:
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+
+        env:
+          POSTGRES_USER: gh200
+          POSTGRES_PASSWORD: gh200pass
+          POSTGRES_DB: gh200db
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd="pg_isready -U gh200 -d gh200db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Mostrar inicio
+        run: |
+          echo "Job de integración iniciado"
+
+      - name: Instalar cliente PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Probar conexión con PostgreSQL
+        env:
+          PGPASSWORD: gh200pass
+        run: |
+          psql \
+            -h localhost \
+            -p 5432 \
+            -U gh200 \
+            -d gh200db \
+            -c "SELECT version();"
