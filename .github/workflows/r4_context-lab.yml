@@ -30,3 +30,46 @@ jobs:
           echo "Workflow: ${{ github.workflow }}"
           echo "Run ID: ${{ github.run_id }}"
           echo "Run number: ${{ github.run_number }}"          
+
+      - name: Mostrar contexto runner
+        run: |
+          echo "Ref: ${{ github.ref }}"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Runner arch: ${{ runner.arch }}"
+          echo "Runner name: ${{ runner.name }}"
+          echo "Runner temp: ${{ runner.temp }}"
+          echo "Runner tool cache: ${{ runner.tool_cache }}"          
+
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node:
+          - 20
+          - 22
+
+    outputs:
+      build-version: ${{ steps.version.outputs.value }}
+
+    steps:
+      - name: Mostrar contexts
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Input environment: ${{ inputs.environment }}"
+          echo "Matrix Node: ${{ matrix.node }}"
+
+      - name: Generar versión
+        id: version
+        run: |
+          echo "value=1.0.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+  summary:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar contexto needs
+        run: |
+          echo "Resultado job build: ${{ needs.build.result }}"
+          echo "Versión recibida: ${{ needs.build.outputs.build-version }}"          
