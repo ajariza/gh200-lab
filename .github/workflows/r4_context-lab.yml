@@ -1,0 +1,32 @@
+name: R4 - Context Lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Entorno de prueba
+        required: true
+        type: choice
+        options:
+          - test
+          - staging
+
+jobs:
+  context-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar inicio del laboratorio
+        run: |
+          echo "Context lab iniciado"
+
+      - name: Mostrar contexto github no sensible
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Run number: ${{ github.run_number }}"          
