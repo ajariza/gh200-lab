@@ -73,3 +73,13 @@ jobs:
         run: |
           echo "Resultado job build: ${{ needs.build.result }}"
           echo "Versión recibida: ${{ needs.build.outputs.build-version }}"          
+
+      - name: Ejecutar solo en main
+        if: ${{ contains(github.ref, 'main') }}
+        run: |
+          echo "La referencia contiene 'main'"
+          
+      - name: Ejecutar si todo lo anterior ha ido bien
+        if: ${{ success() }}
+        run: |
+          echo "Los steps anteriores han finalizado correctamente"          
