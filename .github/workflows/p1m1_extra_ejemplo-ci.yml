@@ -1,4 +1,4 @@
-name: CI GH-200
+name: P1M1 Extra - CI GH-200
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: CI
+name: P1M2 - CI
 
 on:
   push:

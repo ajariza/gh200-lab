@@ -1,4 +1,4 @@
-name: "Instalacion YAML"
+name: "P1M1 Extra - Instalacion YAML"
 
 description: "Este workflow se encarga de instalar las dependencias y construir el proyecto utilizando npm y webpack."
 

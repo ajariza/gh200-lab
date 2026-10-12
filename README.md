@@ -1,5 +1,5 @@
 # gh200-lab
-[![CD](https://github.com/ajariza/gh200-lab/actions/workflows/cd.yml/badge.svg)](https://github.com/ajariza/gh200-lab/actions/workflows/cd.yml)
+[![CD](https://github.com/ajariza/gh200-lab/actions/workflows/p1m3_1_cd.yml/badge.svg)](https://github.com/ajariza/gh200-lab/actions/workflows/p1m3_1_cd.yml)
 Laboratorio personal para GitHub Actions GH-200
 ## Objetivos de automatización
 

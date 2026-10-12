@@ -1,4 +1,4 @@
-name: Primer workflow GH-200
+name: P1M1 - Primer workflow GH-200
 
 on:
   push:

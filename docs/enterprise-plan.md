@@ -417,7 +417,7 @@ Para evitar duplicar la misma lógica en todos los repositorios, se propone cent
 
 Ejemplo:
 
-.github/workflows/reusable-ci.yml
+.github/workflows/p2m3_3_reusable-ci.yml
 
 El reusable workflow utilizaría:
 
