@@ -580,3 +580,128 @@ Tras revisar la guía oficial GH-200 2026, quedan algunos objetivos que se han v
 - Pinning de actions por SHA.
 - Uso de GitHub-hosted runners.
 - Labels de runners.
+
+
+## Resumen de gobierno de GitHub Actions
+
+### Arquitectura de runners
+
+La organización utilizará:
+
+- GitHub-hosted runners para CI estándar.
+- Self-hosted runners cuando se necesite acceso a red interna, software específico o mayor control.
+- Runner groups para separar usos generales y producción.
+- Labels para describir capacidades de los runners.
+- Medidas de parcheo, limpieza y aislamiento para runners self-hosted.
+
+### Política de Actions
+
+Se aplicará una política de uso basada en:
+
+- Permitir actions oficiales de GitHub y proveedores aprobados.
+- Revisar nuevas dependencias de Actions antes de incorporarlas.
+- Utilizar pinning por SHA cuando se requiera mayor inmutabilidad.
+- Aplicar mínimo privilegio en `permissions`.
+- Evitar actions no confiables en workflows con acceso sensible.
+
+### Reusable workflows
+
+La CI común se centralizará mediante reusable workflows.
+
+Estos workflows podrán recibir:
+
+- inputs
+- secrets
+- parámetros de configuración
+
+Los repositorios consumidores mantendrán callers pequeños y solo definirán las particularidades de cada proyecto.
+
+### Estrategia de secrets
+
+Los datos se almacenarán según su ámbito:
+
+- `vars`: configuración no sensible.
+- Repository secrets: credenciales propias de un repositorio.
+- Organization secrets: credenciales compartidas entre varios repositorios.
+- Environment secrets: credenciales específicas de staging, production u otros entornos.
+- OIDC: autenticación cloud temporal cuando sea posible.
+
+Los secrets no deberán aparecer en logs y los workflows deberán utilizar únicamente los permisos necesarios.
+
+
+## Checklist de revisión para nuevos workflows
+
+Antes de aprobar un nuevo workflow de GitHub Actions, comprobar:
+
+### Trigger y ejecución
+- [ ] El evento `on` es el adecuado.
+- [ ] Los filtros de ramas y rutas no son demasiado amplios.
+- [ ] No existen ejecuciones innecesarias.
+- [ ] `workflow_dispatch` se usa cuando tiene sentido.
+
+### Permisos
+- [ ] `permissions` aplica mínimo privilegio.
+- [ ] No se concede `write` si solo se necesita `read`.
+- [ ] `GITHUB_TOKEN` tiene únicamente los permisos necesarios.
+
+### Actions externas
+- [ ] Las actions utilizadas están permitidas por la política de la organización.
+- [ ] Se han revisado las dependencias externas.
+- [ ] Las actions críticas están fijadas por SHA cuando procede.
+- [ ] No se introducen actions de proveedores no confiables.
+
+### Runners
+- [ ] Se utiliza el tipo de runner adecuado.
+- [ ] Los self-hosted runners están correctamente aislados.
+- [ ] Las labels seleccionan las capacidades necesarias.
+- [ ] Los runner groups restringen el acceso cuando procede.
+- [ ] Los runners sensibles no son accesibles desde repositorios no confiables.
+
+### Secrets y variables
+- [ ] Los datos no sensibles utilizan `vars`.
+- [ ] Las credenciales utilizan `secrets`.
+- [ ] Las credenciales específicas de un entorno utilizan environment secrets.
+- [ ] Los secrets no se imprimen en logs.
+- [ ] Los secrets se pasan explícitamente a reusable workflows cuando es necesario.
+- [ ] Se utiliza OIDC en lugar de credenciales cloud estáticas cuando es posible.
+
+### Reutilización
+- [ ] Se ha comprobado si la lógica ya existe en un reusable workflow.
+- [ ] No se duplica CI/CD común innecesariamente.
+- [ ] Los inputs y outputs están claramente definidos.
+- [ ] Los secrets requeridos están documentados.
+
+### Seguridad y mantenimiento
+- [ ] No hay credenciales escritas directamente en el YAML.
+- [ ] Los datos procedentes de usuarios, issues o PR se consideran entrada no confiable.
+- [ ] Los jobs sensibles usan environments y protecciones cuando corresponde.
+- [ ] El workflow es comprensible y mantenible.
+- [ ] Los steps tienen nombres descriptivos.
+
+
+
+## Estado final del documento
+
+Este documento define la estrategia de gobierno de GitHub Actions para la organización.
+
+Incluye:
+
+- Política de uso de Actions.
+- Criterios para actions externas y pinning por SHA.
+- Estrategia de reusable workflows.
+- Arquitectura de GitHub-hosted y self-hosted runners.
+- Uso de labels y runner groups.
+- Separación entre runners generales y de producción.
+- Estrategia de variables y secrets por ámbito.
+- Uso de environment protections.
+- Principio de mínimo privilegio.
+- Uso de OIDC cuando sea apropiado.
+- Checklist de revisión para nuevos workflows.
+
+Las decisiones deben revisarse cuando cambien:
+
+- las políticas de GitHub,
+- la infraestructura de runners,
+- los requisitos de seguridad,
+- los repositorios autorizados,
+- o los mecanismos de autenticación utilizados.
